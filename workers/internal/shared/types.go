@@ -37,3 +37,11 @@ type ActivityResult struct {
 	Message string `json:"message"`
 	Value   string `json:"value,omitempty"`
 }
+
+type MockError struct {
+	Message string `json:"message"`
+}
+
+func (e *MockError) Error() string {
+	return e.Message
+}

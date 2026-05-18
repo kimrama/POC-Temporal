@@ -28,6 +28,8 @@ func CreateSecret(ctx context.Context, input shared.ProvisionInput) (shared.Acti
 		Message: fmt.Sprintf("Secret for %s created", input.AppName),
 		Value:   fmt.Sprintf("%s-secret", input.AppName),
 	}, nil
+
+	// return shared.ActivityResult{}, &shared.MockError{Message: "failed to create secret"}
 }
 
 func DeleteSecret(ctx context.Context, input shared.ProvisionInput) (shared.ActivityResult, error) {
