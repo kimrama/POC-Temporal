@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: temporal
+      POSTGRES_PASSWORD: temporal
+    ports:
+      - "5432:5432"
+
+  temporal:
+    image: temporalio/auto-setup:1.27.2
+    depends_on:
+      - postgres
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=postgres
+    ports:
+      - "7233:7233"
+
+  temporal-ui:
+    image: temporalio/ui:2.36.0
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:5173
+    ports:
+      - "8080:8080"
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - WORKFLOW_TASK_QUEUE=provision-task-queue
+      - FRONTEND_ORIGIN=http://localhost:5173
+    ports:
+      - "8000:8000"
+
+  worker-k8s:
+    build:
+      context: ./workers
+      dockerfile: Dockerfile.k8s
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - WORKFLOW_TASK_QUEUE=provision-task-queue
+      - K8S_TASK_QUEUE=k8s-task-queue
+      - CERT_TASK_QUEUE=cert-task-queue
+
+  worker-cert:
+    build:
+      context: ./workers
+      dockerfile: Dockerfile.cert
+    depends_on:
+      - temporal
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - CERT_TASK_QUEUE=cert-task-queue
