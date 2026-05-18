@@ -54,26 +54,13 @@ services:
     ports:
       - "8000:8000"
 
-  worker-k8s:
+  worker-computer:
     build:
-      context: ./workers
-      dockerfile: Dockerfile.k8s
+      context: ./worker-computer
+      dockerfile: Dockerfile.computer
     depends_on:
       - temporal
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_NAMESPACE=default
-      - WORKFLOW_TASK_QUEUE=provision-task-queue
-      - K8S_TASK_QUEUE=k8s-task-queue
-      - CERT_TASK_QUEUE=cert-task-queue
-
-  worker-cert:
-    build:
-      context: ./workers
-      dockerfile: Dockerfile.cert
-    depends_on:
-      - temporal
-    environment:
-      - TEMPORAL_ADDRESS=temporal:7233
-      - TEMPORAL_NAMESPACE=default
-      - CERT_TASK_QUEUE=cert-task-queue
+      - COMPUTER_TASK_QUEUE=computer-task-queue

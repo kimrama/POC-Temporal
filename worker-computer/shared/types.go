@@ -1,7 +1,7 @@
 package shared
 
 type ComputeInput struct {
-	InitialValue int
+	InitialValue int `json:"initial_value"`
 }
 
 type StepStatus string
