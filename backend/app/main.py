@@ -78,28 +78,28 @@ async def start_workflow(initial_value: int) -> StartWorkflowResponse:
     return StartWorkflowResponse(workflow_id=handle.id, run_id=run_id)
 
 
-# @app.get("/workflows/{workflow_id}/progress")
-# async def get_progress(workflow_id: str) -> dict[str, Any]:
-#     client = await get_temporal_client()
-#     handle = client.get_workflow_handle(workflow_id)
+@app.get("/workflows/{workflow_id}/progress")
+async def get_progress(workflow_id: str) -> dict[str, Any]:
+    client = await get_temporal_client()
+    handle = client.get_workflow_handle(workflow_id)
 
-#     try:
-#         progress = await handle.query("get_progress")
-#         print(f"Queried progress for workflow {workflow_id}: {progress}")
-#         return progress
-#     except WorkflowFailureError as exc:
-#         raise HTTPException(status_code=409, detail=str(exc)) from exc
-#     except Exception as exc:
-#         msg = str(exc).lower()
-#         if "consistent query buffer is full" in msg or "resourceexhausted" in msg or "resource exhausted" in msg:
-#             # Temporal returns ResourceExhausted when the workflow's query buffer is full.
-#             # Return 429 so callers (frontend) can back off and retry later and include a Retry-After header.
-#             return JSONResponse(
-#                 status_code=429,
-#                 content={"detail": "Workflow busy, try again later"},
-#                 headers={"Retry-After": "2"},
-#             )
-#         raise HTTPException(status_code=404, detail=f"Cannot query workflow: {exc}") from exc
+    try:
+        progress = await handle.query("get_progress")
+        print(f"Queried progress for workflow {workflow_id}: {progress}")
+        return progress
+    except WorkflowFailureError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception as exc:
+        msg = str(exc).lower()
+        if "consistent query buffer is full" in msg or "resourceexhausted" in msg or "resource exhausted" in msg:
+            # Temporal returns ResourceExhausted when the workflow's query buffer is full.
+            # Return 429 so callers (frontend) can back off and retry later and include a Retry-After header.
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Workflow busy, try again later"},
+                headers={"Retry-After": "2"},
+            )
+        raise HTTPException(status_code=404, detail=f"Cannot query workflow: {exc}") from exc
 
 
 # @app.get("/workflows/{workflow_id}/result")
