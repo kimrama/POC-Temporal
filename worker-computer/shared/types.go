@@ -14,6 +14,11 @@ const (
 	StepRollback  StepStatus = "rollback"
 )
 
+type Compensation struct {
+	Name string      `json:"name"`
+	Do   interface{} `json:"fn"`
+}
+
 type WorkflowStep struct {
 	Key         string     `json:"key"`
 	Label       string     `json:"label"`

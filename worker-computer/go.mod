@@ -1,4 +1,4 @@
-module temporal-progress-mock/workers
+module temporal-progress-mock
 
 go 1.24
 

@@ -4,11 +4,13 @@ import (
 	"log"
 	"os"
 
-	"temporal-progress-mock/workers/activities"
+	"temporal-progress-mock/activities"
+	"temporal-progress-mock/workflows"
 
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
+	"go.temporal.io/sdk/workflow"
 )
 
 func main() {
@@ -27,8 +29,16 @@ func main() {
 
 	computerWorker := worker.New(c, ComputerTaskQueue, worker.Options{})
 
-	computerWorker.RegisterActivityWithOptions(activities.SetInitialValues, activity.RegisterOptions{Name: "SetInitialValues"})
+	computerWorker.RegisterWorkflowWithOptions(workflows.ComputeWorkflow, workflow.RegisterOptions{
+		Name: "ComputeWorkflow",
+	})
 
+	computerWorker.RegisterActivityWithOptions(activities.SetInitialValues, activity.RegisterOptions{Name: "SetInitialValues"})
+	computerWorker.RegisterActivityWithOptions(activities.ResetValue, activity.RegisterOptions{Name: "ResetValue"})
+	computerWorker.RegisterActivityWithOptions(activities.PlusOne, activity.RegisterOptions{Name: "PlusOne"})
+	computerWorker.RegisterActivityWithOptions(activities.TimesTwo, activity.RegisterOptions{Name: "TimesTwo"})
+	computerWorker.RegisterActivityWithOptions(activities.MinusOne, activity.RegisterOptions{Name: "MinusOne"})
+	computerWorker.RegisterActivityWithOptions(activities.DivideByTwo, activity.RegisterOptions{Name: "DivideByTwo"})
 	log.Printf("starting computer activity worker on task queue %s", ComputerTaskQueue)
 
 	if err := computerWorker.Run(worker.InterruptCh()); err != nil {
