@@ -25,15 +25,15 @@ func main() {
 	}
 	defer c.Close()
 
-	w := worker.New(c, certTaskQueue, worker.Options{})
+	certWorker := worker.New(c, certTaskQueue, worker.Options{})
 
-	w.RegisterActivityWithOptions(activities.RequestCertificate, activity.RegisterOptions{Name: "RequestCertificate"})
-	w.RegisterActivityWithOptions(activities.DeployApplication, activity.RegisterOptions{Name: "DeployApplication"})
-	w.RegisterActivityWithOptions(activities.VerifyApplication, activity.RegisterOptions{Name: "VerifyApplication"})
+	certWorker.RegisterActivityWithOptions(activities.RequestCertificate, activity.RegisterOptions{Name: "RequestCertificate"})
+	certWorker.RegisterActivityWithOptions(activities.DeployApplication, activity.RegisterOptions{Name: "DeployApplication"})
+	certWorker.RegisterActivityWithOptions(activities.VerifyApplication, activity.RegisterOptions{Name: "VerifyApplication"})
 
 	log.Printf("starting cert/deploy activity worker on task queue %s", certTaskQueue)
 
-	if err := w.Run(worker.InterruptCh()); err != nil {
+	if err := certWorker.Run(worker.InterruptCh()); err != nil {
 		log.Fatalln("unable to start worker", err)
 	}
 }
