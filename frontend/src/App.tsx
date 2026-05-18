@@ -142,9 +142,7 @@ export function App() {
     <main className="min-h-screen p-6 text-slate-900">
       <div className="mx-auto max-w-4xl">
         <section className="mb-6 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <h1 className="mt-2 text-3xl font-bold">
-            Provision workflow progress mock
-          </h1>
+          <h1 className="mt-2 text-3xl font-bold">Temporal Mock</h1>
 
           <div className="mt-6 grid gap-3 md:grid-cols-3">
             <label className="block">
