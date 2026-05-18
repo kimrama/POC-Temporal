@@ -6,6 +6,13 @@ services:
       POSTGRES_PASSWORD: temporal
     ports:
       - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: temporal@temporal.com
+      PGADMIN_DEFAULT_PASSWORD: temporal
+    ports:
+      - "8081:80"
 
   temporal:
     image: temporalio/auto-setup:1.27.2
