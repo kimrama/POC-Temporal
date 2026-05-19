@@ -71,8 +71,12 @@ func ComputeWorkflow(ctx workflow.Context, input shared.ComputeInput) (string, e
 
 	// Step 2: Add 1
 
+	type inputMessage struct {
+		Meassage string `json:"message"`
+	}
+
 	setStep(ctx, &state, "plus_one", shared.StepRunning, "Adding 1")
-	err = workflow.ExecuteActivity(ctx, "PlusOne").Get(ctx, nil)
+	err = workflow.ExecuteActivity(ctx, "PlusOne", inputMessage{Meassage: "Adding 1"}).Get(ctx, nil)
 	if err != nil {
 		setStep(ctx, &state, "plus_one", shared.StepFailed, err.Error())
 		rollback()
@@ -83,7 +87,7 @@ func ComputeWorkflow(ctx workflow.Context, input shared.ComputeInput) (string, e
 
 	// Step 3: Multiply by 2
 	setStep(ctx, &state, "times_two", shared.StepRunning, "Multiplying by 2")
-	err = workflow.ExecuteActivity(ctx, "TimesTwo").Get(ctx, nil)
+	err = workflow.ExecuteActivity(ctx, "TimesTwo", inputMessage{Meassage: "Multiplying by 2"}).Get(ctx, nil)
 	if err != nil {
 		setStep(ctx, &state, "times_two", shared.StepFailed, err.Error())
 		rollback()

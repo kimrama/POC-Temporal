@@ -34,6 +34,7 @@ services:
     environment:
       - TEMPORAL_ADDRESS=temporal:7233
       - TEMPORAL_CORS_ORIGINS=http://localhost:5173
+      - TEMPORAL_INSECURE=true
     ports:
       - "8080:8080"
   frontend:
