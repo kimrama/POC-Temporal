@@ -14,6 +14,25 @@ const (
 )
 
 func ComputeWorkflow(ctx workflow.Context, input shared.ComputeInput) (string, error) {
+
+	state := shared.ProgressState{
+		Status: "running",
+		Steps: []shared.ComputeStep{
+			{Key: "set_initial_values", Label: "Set Initial Values", Status: shared.StepPending},
+			{Key: "plus_one", Label: "Add 1", Status: shared.StepPending},
+			{Key: "times_two", Label: "Multiply by 2", Status: shared.StepPending},
+		},
+	}
+
+	info := workflow.GetInfo(ctx)
+	state.WorkflowID = info.WorkflowExecution.ID
+
+	if err := workflow.SetQueryHandler(ctx, "progress", func() (shared.ProgressState, error) {
+		return state, nil
+	}); err != nil {
+		return "", err
+	}
+
 	ao := workflow.ActivityOptions{
 		StartToCloseTimeout: time.Minute,
 		RetryPolicy:         &temporal.RetryPolicy{MaximumAttempts: 3},

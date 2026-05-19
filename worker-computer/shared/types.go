@@ -19,7 +19,7 @@ type Compensation struct {
 	Do   interface{} `json:"fn"`
 }
 
-type WorkflowStep struct {
+type ComputeStep struct {
 	Key         string     `json:"key"`
 	Label       string     `json:"label"`
 	Status      StepStatus `json:"status"`
@@ -29,11 +29,11 @@ type WorkflowStep struct {
 }
 
 type ProgressState struct {
-	WorkflowID  string         `json:"workflow_id,omitempty"`
-	Status      string         `json:"status"`
-	CurrentStep string         `json:"current_step,omitempty"`
-	Error       string         `json:"error,omitempty"`
-	Steps       []WorkflowStep `json:"steps"`
+	WorkflowID  string        `json:"workflow_id,omitempty"`
+	Status      string        `json:"status"`
+	CurrentStep string        `json:"current_step,omitempty"`
+	Error       string        `json:"error,omitempty"`
+	Steps       []ComputeStep `json:"steps"`
 }
 
 type ActivityResult struct {
